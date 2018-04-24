@@ -9,6 +9,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "csv-parse": "^2.2.0",
     "readline-sync": "^1.4.9"
   }
 }
