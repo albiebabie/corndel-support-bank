@@ -27,12 +27,19 @@ Either parse the file yourself, or search NPM for a relevant CSV parsing library
 */
 
 const fs = require("fs");
-// const parse = require("csv-parse");
-// fs.readFile(inputPath, function(err, fileData) {
-//     parse(fileData, { columns: false, trim: true }, function(err, rows) {
-//         // Your CSV data is in an array of arrys passed to this callback as rows.
-//     });
-// });
-
 const csvFile = fs.readFileSync("./Transactions2014.csv", "utf8");
-console.log(csvFile);
+// parse(csvFile, { columns: true, trim: true });
+
+const splitFileByNewLines = csvFile.split("\n");
+let transactions = [];
+splitFileByNewLines.forEach(element => {
+    transactions.push(element.split(","));
+});
+console.log(transactions);
+
+// transactions
+// name
+// from
+// to
+// narrative
+// amount
