@@ -22,24 +22,59 @@ with the date and narrative, for that account with that name.
 Hints:
 
 You will need to accept user input - the readline-sync package covers this.
-The JavaScript Date class is extremely bothersome to use. We recommend you parse your date strings using the moment package instead: install it with npm install moment and see this link for documentation on how to parse dates.
+The JavaScript Date class is extremely bothersome to use. 
+We recommend you parse your date strings using the moment package instead: 
+install it with npm install moment and see this link for documentation on how to parse dates.
 Either parse the file yourself, or search NPM for a relevant CSV parsing library!
 */
 
-const fs = require("fs");
-const csvFile = fs.readFileSync("./Transactions2014.csv", "utf8");
-// parse(csvFile, { columns: true, trim: true });
+const FS = require("fs");
+const Transaction = require("./transaction.js");
+const CSVFile = FS.readFileSync("./Transactions2014.csv", "utf8");
+const transactionsList = getListOfTransactionsFromFile(CSVFile);
 
-const splitFileByNewLines = csvFile.split("\n");
-let transactions = [];
-splitFileByNewLines.forEach(element => {
-    transactions.push(element.split(","));
-});
-console.log(transactions);
+function getListOfTransactionsFromFile(file) {
+    let transactionsArray = [];
+    let transactions = file.split("\n");
+    transactions.forEach(transaction => {
+        transactionsArray.push(transaction.split(","));
+    });
+    let listOfTransactionObjects = getListOfTranscationObjects(transactionsArray);
+    return listOfTransactionObjects;
+}
 
-// transactions
-// name
-// from
-// to
-// narrative
-// amount
+function createNewTransactionObject(transactionArray) {
+    var date = getTransactionDate(transactionArray);
+    var from = getTransactionFrom(transactionArray);
+    var to = getTransactionTo(transactionArray);
+    var narrative = getTransactionNarrative(transactionArray);
+    var amount = getTransactionAmount(transactionArray);
+    return new Transaction(date, from, to, narrative, amount);
+}
+
+function getTransactionDate(transaction) {
+    return transaction[0];
+}
+function getTransactionFrom(transaction) {
+    return transaction[1];
+}
+function getTransactionTo(transaction) {
+    return transaction[2];
+}
+function getTransactionNarrative(transaction) {
+    return transaction[3];
+}
+function getTransactionAmount(transaction) {
+    return transaction[4];
+}
+
+function getListOfTranscationObjects(transactions) {
+    let arrayOfListObjects = [];
+    transactions.forEach(transaction => {
+        if (transactions.indexOf(transaction) != 0) {
+            const transactionObject = createNewTransactionObject(transaction);
+            arrayOfListObjects.push(transactionObject);
+        }
+    });
+    return arrayOfListObjects;
+}
