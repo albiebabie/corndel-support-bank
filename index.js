@@ -30,6 +30,7 @@ Either parse the file yourself, or search NPM for a relevant CSV parsing library
 
 const FS = require("fs");
 const Transaction = require("./transaction.js");
+const Account = require("./account.js");
 const CSVFile = FS.readFileSync("./Transactions2014.csv", "utf8");
 const transactionsList = getListOfTransactionsFromFile(CSVFile);
 
@@ -44,28 +45,12 @@ function getListOfTransactionsFromFile(file) {
 }
 
 function createNewTransactionObject(transactionArray) {
-    var date = getTransactionDate(transactionArray);
-    var from = getTransactionFrom(transactionArray);
-    var to = getTransactionTo(transactionArray);
-    var narrative = getTransactionNarrative(transactionArray);
-    var amount = getTransactionAmount(transactionArray);
+    var date = transactionArray[0];
+    var from = transactionArray[1];
+    var to = transactionArray[2];
+    var narrative = transactionArray[3];
+    var amount = transactionArray[4];
     return new Transaction(date, from, to, narrative, amount);
-}
-
-function getTransactionDate(transaction) {
-    return transaction[0];
-}
-function getTransactionFrom(transaction) {
-    return transaction[1];
-}
-function getTransactionTo(transaction) {
-    return transaction[2];
-}
-function getTransactionNarrative(transaction) {
-    return transaction[3];
-}
-function getTransactionAmount(transaction) {
-    return transaction[4];
 }
 
 function getListOfTranscationObjects(transactions) {
@@ -78,3 +63,11 @@ function getListOfTranscationObjects(transactions) {
     });
     return arrayOfListObjects;
 }
+
+let accountList = [];
+transactionsList.forEach(transaction => {
+    accountList.push(new Account(transaction.from));
+    accountList.push(new Account(transaction.to));
+});
+
+console.log(accountList);
