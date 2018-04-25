@@ -13,35 +13,29 @@ function listAllAccounts(accounts) {
 }
 
 function listAccountByName(name, accounts) {
-    // List [Account] should also print a list of every transaction,
-    // with the date and narrative, for that account with that name.
-
     console.log(`Account: ${name}`);
     console.log("Transactions: ");
     const account = accounts.filter(account => account.name === name)[0];
-    // console.log(account);
-
     const owesTransactions = account.owes;
     console.log("______Owes Transactions______");
-    // console.log(owesTransactions);
-
-    owesTransactions.forEach(transaction => {
-        console.log("Date: " + transaction.date);
-        console.log("From: " + transaction.from);
-        console.log("To: " + transaction.to);
-        console.log("Narrative: " + transaction.narrative);
-        console.log("Amount: £" + transaction.amount + "\n");
-    });
-
+    printTransactions(owesTransactions);
     const owedTransactions = account.owed;
     console.log("______Owed Transactions______");
-    owedTransactions.forEach(transaction => {
-        console.log("Date: " + transaction.date);
-        console.log("From: " + transaction.from);
-        console.log("To: " + transaction.to);
-        console.log("Narrative: " + transaction.narrative);
-        console.log("Amount: £" + transaction.amount + "\n");
+    printTransactions(owedTransactions);
+}
+
+function printTransactions(transactions) {
+    transactions.forEach(transaction => {
+        printTransaction(transaction);
     });
+}
+
+function printTransaction(transaction) {
+    console.log("Date: " + transaction.date);
+    console.log("From: " + transaction.from);
+    console.log("To: " + transaction.to);
+    console.log("Narrative: " + transaction.narrative);
+    console.log("Amount: £" + transaction.amount + "\n");
 }
 
 function printWelcomeMessage() {
