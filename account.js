@@ -13,8 +13,6 @@ class Account {
     }
 
     displayBalance() {
-        // return this.balance + " - " + (this.balance >= 0 ? "positive" : "negative") + " balance";
-
         if (this.balance > 0) {
             return `You are owed: £${this.balance}, better get collecting!`;
         }

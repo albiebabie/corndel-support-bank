@@ -7,12 +7,12 @@ class Transaction {
         this.amount = amount;
     }
 
-    static createFromRowArray(transactionArray) {
-        var date = transactionArray[0];
-        var from = transactionArray[1];
-        var to = transactionArray[2];
-        var narrative = transactionArray[3];
-        var amount = transactionArray[4];
+    static createFromRow(row) {
+        var date = row[0];
+        var from = row[1];
+        var to = row[2];
+        var narrative = row[3];
+        var amount = row[4];
         return new Transaction(date, from, to, narrative, amount);
     }
 }

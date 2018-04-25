@@ -1,107 +1,14 @@
-/* 
-The person in the 'From' column is paying money, 
-so the amount needs to be deducted from their account. 
-
-The person in the 'To' column is being paid, 
-so the amount needs to be added to their account. 
-
-Use a class for each type of object you want to create.
-
-Your program should support two commands, 
-which can be typed in on the console:
-
-
-
-
-
-Hints:
-
-You will need to accept user input - the readline-sync package covers this.
-The JavaScript Date class is extremely bothersome to use. 
-We recommend you parse your date strings using the moment package instead: 
-install it with npm install moment and see this link for documentation on how to parse dates.
-Either parse the file yourself, or search NPM for a relevant CSV parsing library!
-*/
-
 const FS = require("fs");
-const Transaction = require("./transaction.js");
-const Account = require("./account.js");
-const UserInput = require("./userInput.js");
-
-function getListOfTransactionsFromFile(file) {
-    let transactionsArray = [];
-    let transactions = file.split("\n");
-    transactions.forEach(transaction => {
-        var split = transaction.split(",");
-        if (split.length === 5) {
-            transactionsArray.push(transaction.split(","));
-        }
-    });
-    return getListOfTranscationObjects(transactionsArray);
-}
-
-function getListOfTranscationObjects(transactions) {
-    let arrayOfListObjects = [];
-    transactions.forEach(transaction => {
-        if (transactions.indexOf(transaction) != 0) {
-            const transactionObject = Transaction.createFromRowArray(transaction);
-            arrayOfListObjects.push(transactionObject);
-        }
-    });
-    return arrayOfListObjects;
-}
-
-function createAccountsFromTransactions(transactions) {
-    let accountList = [];
-    transactions.forEach(transaction => {
-        let from = transaction.from;
-        let to = transaction.to;
-        if (accountExists(from, accountList) == false) {
-            let account = createAccountFromTransaction(transaction, transactions);
-            accountList.push(account);
-        }
-        if (accountExists(to, accountList) == false) {
-            let account = createAccountToTransaction(transaction, transactions);
-            accountList.push(account);
-        }
-    });
-    return accountList;
-}
-
-function createAccountFromTransaction(transaction, transactions) {
-    let transactionsFrom = getListOfTransactionsFrom(transaction.from, transactions);
-    let transactionsTo = getListOfTransactionsTo(transaction.from, transactions);
-    return new Account(transaction.from, transactionsFrom, transactionsTo);
-}
-function createAccountToTransaction(transaction, transactions) {
-    let transactionsFrom = getListOfTransactionsFrom(transaction.from, transactions);
-    let transactionsTo = getListOfTransactionsTo(transaction.from, transactions);
-    return new Account(transaction.to, transactionsFrom, transactionsTo);
-}
-
-function accountExists(nameToCheck, accounts) {
-    let accountExists = false;
-    for (i = 0; i < accounts.length; i++) {
-        let account = accounts[i];
-        if (account.name == nameToCheck) {
-            accountExists = true;
-            break;
-        }
-    }
-    return accountExists;
-}
-
-function getListOfTransactionsFrom(name, transactions) {
-    return transactions.filter(transaction => transaction.from == name);
-}
-function getListOfTransactionsTo(name, transactions) {
-    return transactions.filter(transaction => transaction.to == name);
-}
+const Account = require("./account");
+const UserInput = require("./userInput");
+const ParseCSV = require("./parseCSV");
 
 function listAllAccounts(accounts) {
+    console.log("\nAccounts: \n");
     accounts.forEach(account => {
         console.log(account.name);
-        console.log(account.displayBalance());
+        console.log("-------------");
+        console.log(account.displayBalance() + "\n");
     });
 }
 
@@ -148,8 +55,9 @@ ${ModeListAccountByName} View Account By Name`);
 }
 
 const CSVFile = FS.readFileSync("./Transactions2014.csv", "utf8");
-const transactionsList = getListOfTransactionsFromFile(CSVFile);
-const accounts = createAccountsFromTransactions(transactionsList);
+const transactions = ParseCSV.getTransactionsFromFile(CSVFile);
+const accounts = ParseCSV.createAccountsFromTransactions(transactions);
+
 const ModeListAllAccounts = "1";
 const ModeListAccountByName = "2";
 
@@ -159,7 +67,6 @@ if (viewMode == ModeListAllAccounts) {
     listAllAccounts(accounts);
 } else if (viewMode == ModeListAccountByName) {
     const accountName = UserInput.getStringWithPrompt("Enter an Account Name");
-    // console.log(accounts);
     const matchedAccount = listAccountByName(accountName, accounts);
-    // console.log(matchedAccount);
+    console.log(matchedAccount);
 }
