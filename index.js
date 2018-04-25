@@ -1,7 +1,4 @@
 /* 
-Write a program which creates an account for each person, 
-and then creates transactions between the accounts. 
-
 The person in the 'From' column is paying money, 
 so the amount needs to be deducted from their account. 
 
@@ -36,7 +33,7 @@ function getListOfTransactionsFromFile(file) {
     let transactionsArray = [];
     let transactions = file.split("\n");
     transactions.forEach(transaction => {
-        var split = transaction.split(",")
+        var split = transaction.split(",");
         if (split.length === 5) {
             transactionsArray.push(transaction.split(","));
         }
@@ -61,13 +58,26 @@ function createAccountsFromTransactions(transactions) {
         let from = transaction.from;
         let to = transaction.to;
         if (accountExists(from, accountList) == false) {
-            accountList.push(new Account(transaction.from));
+            let account = createAccountFromTransaction(transaction, transactions);
+            accountList.push(account);
         }
         if (accountExists(to, accountList) == false) {
-            accountList.push(new Account(transaction.to));
+            let account = createAccountToTransaction(transaction, transactions);
+            accountList.push(account);
         }
     });
     return accountList;
+}
+
+function createAccountFromTransaction(transaction, transactions) {
+    let transactionsFrom = getListOfTransactionsFrom(transaction.from, transactions);
+    let transactionsTo = getListOfTransactionsTo(transaction.from, transactions);
+    return new Account(transaction.from, transactionsFrom, transactionsTo);
+}
+function createAccountToTransaction(transaction, transactions) {
+    let transactionsFrom = getListOfTransactionsFrom(transaction.from, transactions);
+    let transactionsTo = getListOfTransactionsTo(transaction.from, transactions);
+    return new Account(transaction.to, transactionsFrom, transactionsTo);
 }
 
 function accountExists(nameToCheck, accounts) {
@@ -82,7 +92,21 @@ function accountExists(nameToCheck, accounts) {
     return accountExists;
 }
 
+function getListOfTransactionsFrom(name, transactions) {
+    return transactions.filter(transaction => transaction.from == name);
+}
+function getListOfTransactionsTo(name, transactions) {
+    return transactions.filter(transaction => transaction.to == name);
+}
+
 const CSVFile = FS.readFileSync("./Transactions2014.csv", "utf8");
 const transactionsList = getListOfTransactionsFromFile(CSVFile);
 const accounts = createAccountsFromTransactions(transactionsList);
-console.log(accounts);
+
+accounts.forEach(account => {
+    // console.log(account.name);
+    if (account.name == "Laura B") {
+        console.log(account.name);
+        console.log(account.owed);
+    }
+});
