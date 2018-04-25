@@ -31,43 +31,58 @@ Either parse the file yourself, or search NPM for a relevant CSV parsing library
 const FS = require("fs");
 const Transaction = require("./transaction.js");
 const Account = require("./account.js");
-const CSVFile = FS.readFileSync("./Transactions2014.csv", "utf8");
-const transactionsList = getListOfTransactionsFromFile(CSVFile);
 
 function getListOfTransactionsFromFile(file) {
     let transactionsArray = [];
     let transactions = file.split("\n");
     transactions.forEach(transaction => {
-        transactionsArray.push(transaction.split(","));
+        var split = transaction.split(",")
+        if (split.length === 5) {
+            transactionsArray.push(transaction.split(","));
+        }
     });
-    let listOfTransactionObjects = getListOfTranscationObjects(transactionsArray);
-    return listOfTransactionObjects;
-}
-
-function createNewTransactionObject(transactionArray) {
-    var date = transactionArray[0];
-    var from = transactionArray[1];
-    var to = transactionArray[2];
-    var narrative = transactionArray[3];
-    var amount = transactionArray[4];
-    return new Transaction(date, from, to, narrative, amount);
+    return getListOfTranscationObjects(transactionsArray);
 }
 
 function getListOfTranscationObjects(transactions) {
     let arrayOfListObjects = [];
     transactions.forEach(transaction => {
         if (transactions.indexOf(transaction) != 0) {
-            const transactionObject = createNewTransactionObject(transaction);
+            const transactionObject = Transaction.createFromRowArray(transaction);
             arrayOfListObjects.push(transactionObject);
         }
     });
     return arrayOfListObjects;
 }
 
-let accountList = [];
-transactionsList.forEach(transaction => {
-    accountList.push(new Account(transaction.from));
-    accountList.push(new Account(transaction.to));
-});
+function createAccountsFromTransactions(transactions) {
+    let accountList = [];
+    transactions.forEach(transaction => {
+        let from = transaction.from;
+        let to = transaction.to;
+        if (accountExists(from, accountList) == false) {
+            accountList.push(new Account(transaction.from));
+        }
+        if (accountExists(to, accountList) == false) {
+            accountList.push(new Account(transaction.to));
+        }
+    });
+    return accountList;
+}
 
-console.log(accountList);
+function accountExists(nameToCheck, accounts) {
+    let accountExists = false;
+    for (i = 0; i < accounts.length; i++) {
+        let account = accounts[i];
+        if (account.name == nameToCheck) {
+            accountExists = true;
+            break;
+        }
+    }
+    return accountExists;
+}
+
+const CSVFile = FS.readFileSync("./Transactions2014.csv", "utf8");
+const transactionsList = getListOfTransactionsFromFile(CSVFile);
+const accounts = createAccountsFromTransactions(transactionsList);
+console.log(accounts);
