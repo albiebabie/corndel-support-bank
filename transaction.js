@@ -7,12 +7,21 @@ class Transaction {
         this.amount = amount;
     }
 
-    static createFromRow(row) {
+    static createFromCSVRow(row) {
         var date = row[0];
         var from = row[1];
         var to = row[2];
         var narrative = row[3];
         var amount = row[4];
+        return new Transaction(date, from, to, narrative, amount);
+    }
+
+    static createFromJSONRow(row) {
+        var date = row["Date"];
+        var from = row["FromAccount"];
+        var to = row["ToAccount"];
+        var narrative = row["Narrative"];
+        var amount = row["Amount"];
         return new Transaction(date, from, to, narrative, amount);
     }
 

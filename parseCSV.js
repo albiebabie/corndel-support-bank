@@ -27,7 +27,7 @@ function hasCorrectNumberOfColumns(row) {
 function createTransactionsFromRows(rows) {
     let transactions = [];
     rows.forEach(row => {
-        const transaction = Transaction.createFromRow(row);
+        const transaction = Transaction.createFromCSVRow(row);
         transactions.push(transaction);
     });
     return transactions;
