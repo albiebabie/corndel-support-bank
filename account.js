@@ -8,10 +8,10 @@ class Account {
     balance() {
         let balance = 0;
         this.owes.forEach(transaction => {
-            balance += +transaction.amount;
+            balance += parseInt(transaction.amount);
         });
         this.owed.forEach(transaction => {
-            balance -= +transaction.amount;
+            balance -= parseInt(transaction.amount);
         });
         return balance;
     }
@@ -22,7 +22,7 @@ class Account {
             return `You are owed: £${balance}, better get collecting!`;
         }
         if (balance < 0) {
-            return `You owe: £${balance}, keep a low profile!`;
+            return `You owe: £${Math.abs(balance)}, keep a low profile!`;
         }
         if (balance == 0) {
             return `You don't owe anyone and you aren't owed!`;
