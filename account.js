@@ -1,27 +1,52 @@
 class Account {
-    constructor(name, owes, owed) {
+    constructor(name) {
         this.name = name;
-        this.owes = owes;
-        this.owed = owed;
-        this.balance = 0;
-        owes.forEach(transaction => {
-            this.balance += +transaction.amount;
+        this.owes = [];
+        this.owed = [];
+    }
+
+    balance() {
+        let balance = 0;
+        this.owes.forEach(transaction => {
+            balance += +transaction.amount;
         });
-        owed.forEach(transaction => {
-            this.balance -= +transaction.amount;
+        this.owed.forEach(transaction => {
+            balance -= +transaction.amount;
         });
+        return balance;
     }
 
     displayBalance() {
-        if (this.balance > 0) {
-            return `You are owed: £${this.balance}, better get collecting!`;
+        let balance = this.balance();
+        if (balance > 0) {
+            return `You are owed: £${balance}, better get collecting!`;
         }
-        if (this.balance < 0) {
-            return `You owe: £${this.balance}, keep a low profile!`;
+        if (balance < 0) {
+            return `You owe: £${balance}, keep a low profile!`;
         }
-        if (this.balance == 0) {
+        if (balance == 0) {
             return `You don't owe anyone and you aren't owed!`;
         }
+    }
+
+    displayAccountInfo() {
+        console.log("Account: " + this.name);
+        console.log("______Owes Transactions______");
+        this.printTransactions(this.owes);
+        console.log("______Owed Transactions______");
+        this.printTransactions(this.owed);
+    }
+
+    displayAccountOverview() {
+        console.log(this.name);
+        console.log("-------------");
+        console.log(this.displayBalance() + "\n");
+    }
+
+    printTransactions(transactions) {
+        transactions.forEach(transaction => {
+            transaction.print();
+        });
     }
 }
 

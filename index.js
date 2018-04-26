@@ -9,13 +9,15 @@ function printWelcomeMessage() {
 }
 
 function getAccountViewMode() {
-    return UserInput.getStringWithPrompt(`How do you want to view the accounts?
-${ModeListAllAccounts} View All Accounts
-${ModeListAccountByName} View Account By Name`);
+    return UserInput.getStringWithPrompt(
+        `How do you want to view the accounts?\n` +
+            `${ModeListAllAccounts} View All Accounts\n` +
+            `${ModeListAccountByName} View Account By Name`
+    );
 }
 
-// const CSVFile = FS.readFileSync("./DodgyTransactions2015.csv", "utf8");
-const CSVFile = FS.readFileSync("./Transactions2014.csv", "utf8");
+const CSVFile = FS.readFileSync("./DodgyTransactions2015.csv", "utf8");
+// const CSVFile = FS.readFileSync("./Transactions2014.csv", "utf8");
 const transactions = ParseCSV.getTransactionsFromFile(CSVFile);
 const supportBank = new SupportBank(transactions);
 const ModeListAllAccounts = "1";
