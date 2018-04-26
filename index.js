@@ -14,13 +14,12 @@ ${ModeListAllAccounts} View All Accounts
 ${ModeListAccountByName} View Account By Name`);
 }
 
-const CSVFile = FS.readFileSync("./DodgyTransactions2015.csv", "utf8");
+// const CSVFile = FS.readFileSync("./DodgyTransactions2015.csv", "utf8");
+const CSVFile = FS.readFileSync("./Transactions2014.csv", "utf8");
 const transactions = ParseCSV.getTransactionsFromFile(CSVFile);
 const supportBank = new SupportBank(transactions);
 const ModeListAllAccounts = "1";
 const ModeListAccountByName = "2";
-
-supportBank.listAllAccounts();
 
 printWelcomeMessage();
 const viewMode = getAccountViewMode();
@@ -28,6 +27,5 @@ if (viewMode == ModeListAllAccounts) {
     supportBank.listAllAccounts();
 } else if (viewMode == ModeListAccountByName) {
     const accountName = UserInput.getStringWithPrompt("Enter an Account Name");
-    const matchedAccount = supportBank.listAccountByName(accountName);
-    console.log(matchedAccount);
+    supportBank.listAccountByName(accountName);
 }

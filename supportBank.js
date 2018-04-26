@@ -64,19 +64,20 @@ class SupportBank {
     }
 
     listAccountByName(name) {
-        console.log(`Account: ${name}`);
-        console.log("Transactions: ");
-        const account = this.accounts.filter(account => account.name === name)[0];
-        const owesTransactions = account.owes;
-        console.log("______Owes Transactions______");
-        this.printTransactions(owesTransactions);
-        const owedTransactions = account.owed;
-        console.log("______Owed Transactions______");
-        this.printTransactions(owedTransactions);
+        if (this.accountExists(name)) {
+            const account = this.accounts.filter(account => account.name === name)[0];
+            console.log("Account: " + account.name);
+            console.log("______Owes Transactions______");
+            this.printTransactions(account.owes);
+            console.log("______Owed Transactions______");
+            this.printTransactions(account.owed);
+        } else {
+            console.log("Account by the Name: '" + name + "' does not exist!");
+        }
     }
 
-    printTransactions() {
-        this.transactions.forEach(transaction => {
+    printTransactions(transactions) {
+        transactions.forEach(transaction => {
             transaction.print();
         });
     }
