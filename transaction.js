@@ -15,6 +15,14 @@ class Transaction {
         var amount = row[4];
         return new Transaction(date, from, to, narrative, amount);
     }
+
+    print() {
+        console.log("Date: " + this.date);
+        console.log("From: " + this.from);
+        console.log("To: " + this.to);
+        console.log("Narrative: " + this.narrative);
+        console.log("Amount: £" + this.amount + "\n");
+    }
 }
 
 module.exports = Transaction;
